@@ -1,9 +1,11 @@
 {
   "name": "withladder",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "express": "^4.16.3"
   },
