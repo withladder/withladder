@@ -1,4 +1,4 @@
-//連接database
+// database
 const config = {
   driver: 'rethinkdbdash',
   db: 'ladder',
