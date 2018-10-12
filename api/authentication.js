@@ -11,15 +11,15 @@ module.exports = () => {
     done(null, user.id)
   })
 
-// passport將session入面有的 user ，從資料庫轉換成最初的 User
+  // passport將session入面有的 user ，從資料庫轉換成最初的 User
   passport.deserializeUser((user, done) => {
     console.log('user2', user)
     // 驗證使用者資訊
     done(null, user)
   })
 
-// Google帳戶和OAuth 2.0對用戶進行身份驗證,該策略(姐係strategy)需要驗證callback
-//客戶端ID，客戶端密鑰和回調URL的選項
+  // Google帳戶和OAuth 2.0對用戶進行身份驗證,該策略(姐係strategy)需要驗證callback
+  // 客戶端ID，客戶端密鑰和回調URL的選項
   passport.use(
     new GoogleStrategy(
       {
