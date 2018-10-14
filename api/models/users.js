@@ -1,5 +1,7 @@
-// 再入database
+
+// 載入database
 const { db } = require('./db')
+const debug = require('debug')('api:models:users')
 
 // 設定功能反回database中所有用戶data
 const getUsers = () => {
@@ -18,10 +20,12 @@ const getUsers = () => {
 // }
 // providerMethod = 'googleProviderId'
 const createOrFindUser = (user, providerMethod) => {
+  debug('正在執行 createOrFindUser')
   // 設一個變數叫promise拿來save
   let promise
   // 如果係user裹面找到 googleProviderId 的value
   if (user[providerMethod]) {
+    debug('找到 google id', user[providerMethod])
     // 如果找到, 將providerMethod和user的providerMethod交比getUserByIndex運行
     promise = getUserByIndex(providerMethod, user[providerMethod])
       // 資料庫操作完後, 得到storedUser的object
@@ -29,7 +33,8 @@ const createOrFindUser = (user, providerMethod) => {
       // 原來 getUserByIndex 會幫你手搵搵資料庫裡面有無符合既 user
       // 如果有咩既記錄, 就會將個 user 交比 storedUser
       // 如果無咁既記錄, 佢亦都會將 null 交比 storedUser
-      .then((storedUser) => {
+      .then(storedUser => {
+        debug('getUserByIndex執行完後')
         // 如果有storedUser的值, 即係搵到, 即係唔係 null
         if (storedUser) {
           // 返回storedUser
@@ -51,6 +56,7 @@ const createOrFindUser = (user, providerMethod) => {
     // 如果係user裹找不到 googleProviderId 的value
     // 如果有user.email的值, 即係搵到, 即係唔係 null
     if (user.email) {
+      debug('找不到 google id, 但找到 email', user.email)
       // 返回 user.email 比 getUserByEmail 運行
       promise = getUserByEmail(user.email)
     } else {
@@ -66,9 +72,11 @@ const createOrFindUser = (user, providerMethod) => {
     .then(storedUser => {
       // 如果storedUser不是一個空的物件,就是在資料庫找到一筆資料
       if (storedUser && storedUser.id) {
-        // 但那筆資料不是googleID
+        debug('找到資料庫一筆資料, storedUser', storedUser)
+        // 但那筆資料沒有 googleID
         if (!storedUser[providerMethod]) {
           // 更新新的資料,根據用戶的id去創造google的
+          debug('資料庫個筆資料沒有 google id, 所以要去更新', user[providerMethod])
           return saveUserProvider(
             storedUser.id,
             providerMethod,
@@ -94,6 +102,7 @@ const createOrFindUser = (user, providerMethod) => {
         console.error(err)
         return new Error(`No user found for id ${user.id}.`)
       }
+      debug('error', err)
       // 無 user.id, 再試多次新增用戶
       return storeUser(user)
     })
@@ -152,6 +161,7 @@ const saveUserProvider = (
 
 // 新增用戶
 const storeUser = (user) => {
+  debug('新增用戶 storeUser')
   // 反回資料庫新增的promise
   return db
     // 選擇資料庫users的表
@@ -181,7 +191,7 @@ const getUserByEmail = (email) => {
   return db
     // 選擇資料庫users的表
     .table('users')
-    // 揾email,在一個叫inex的索引
+    // 揾email,在一個叫index的索引
     .getAll(email, { index: 'email' })
     .run()
     // 如果他是一個空的arry [],返回 null

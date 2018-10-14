@@ -1,7 +1,9 @@
+var debug = require('debug')('api')
+debug('api server starting...')
 // library
 var express = require('express')
-// Passportof係一個仲介,認證D帳號密碼到API (GOOGLE,FACEBOOK)
-var passport = require('passport')
+// middlewares
+const middlewares = require('./routes/middlewares')
 
 // 仲介者
 // 處理api
@@ -17,20 +19,21 @@ initPassport()
 var app = express()
 
 // 初始化Passport的野
-app.use(passport.initialize())
-// 如果你個 app 需要保存用戶登入 session, 你就需要用到 passport.session
-// passport.session 主要作用就係更改 req.user = 真正的 user object
-// 要令佢正常工作, 需要自己定義 serializeUser 和 deserializeUser
-app.use(passport.session())
+app.use(middlewares)
 
 // 網址如果是auth的時候,執行authRoutes的仲介
 app.use('/auth', authRoutes)
 // 網址如果是api的時候,執行apiRoutes的仲介
 app.use('/api', apiRoutes)
 
+app.get('/', (req, res, next) => {
+  res.end('this is homepage')
+})
+
 // 伺服器鈐聽3001 port
 app.listen(3001, function () {
   console.log('API server listening on port 3001!')
+  debug('api server started.')
 })
 
 // 滙出app
