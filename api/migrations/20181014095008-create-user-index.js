@@ -9,6 +9,10 @@ exports.up = function (r, connection) {
     r
       .table('users')
       .indexCreate('googleProviderId')
+      .run(connection),
+    r
+      .table('users')
+      .indexCreate('facebookProviderId')
       .run(connection)
   ])
 }
@@ -22,6 +26,10 @@ exports.down = function (r, connection) {
     r
       .table('users')
       .indexDrop('googleProviderId')
+      .run(connection),
+    r
+      .table('users')
+      .indexCreate('facebookProviderId')
       .run(connection)
   ])
 }
