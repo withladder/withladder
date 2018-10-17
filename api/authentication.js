@@ -1,6 +1,8 @@
 var debug = require('debug')('api:authentication')
 // 利用google的strategy
 var GoogleStrategy = require('passport-google-oauth2').Strategy
+
+var FacebookStrategy = require('passport-facebook').Strategy
 // 再入passport
 var passport = require('passport')
 // 係models/users入面拿定義了的功能出黎用
@@ -58,6 +60,8 @@ module.exports = () => {
         const user = {
           // google提供的ID
           googleProviderId: profile.id,
+          // facebook提供的ID
+          facebookProviderId: null,
           // 定義用戶名係空的
           username: null,
           // 用戶名稱
@@ -103,6 +107,81 @@ module.exports = () => {
           // 如果資料庫操作有任何錯誤,就將錯誤交出去
           .catch(err => {
             debug('createOrFindUser 有錯誤:', err)
+            done(err)
+            return null
+          })
+      }
+    )
+  )
+
+  // 客戶端ID，客戶端密鑰和回調URL的選項
+  passport.use(
+    new FacebookStrategy(
+      {
+        clientID: '1085221001634239',
+        clientSecret: '4711c12d9c8341bd5eea6ecba918d70e',
+        callbackURL: '/auth/facebook/callback',
+        profileFields: [
+          'id',
+          'displayName',
+          'email',
+          'photos',
+          'first_name',
+          'last_name'
+        ]
+      },
+      // 用 facebook profile object 同你資料庫裡的 user 作比對
+      // 以找出你資料庫裡面屬於呢個 facebook 的 user
+      (request, accessToken, refreshToken, profile, done) => {
+        // 暫時定義 user object
+        const user = {
+          // facebook提供的ID
+          facebookProviderId: profile.id,
+          // google提供的ID
+          googleProviderId: null,
+          // 定義用戶名係空的
+          username: null,
+          // 用戶名稱
+          name: profile.displayName,
+          // 名
+          firstName:
+            profile.name && profile.name.givenName
+              ? profile.name.givenName
+              : '',
+          // 姓
+          lastName:
+            profile.name && profile.name.familyName
+              ? profile.name.familyName
+              : '',
+          // 電郵
+          email:
+            profile.emails &&
+            profile.emails.length > 0 &&
+            profile.emails[0].value !== undefined
+              ? profile.emails[0].value
+              : null,
+          // 大頭照
+          profilePhoto:
+            profile.photos &&
+            profile.photos.length > 0 &&
+            profile.photos[0].value !== undefined
+              ? profile.photos[0].value
+              : null,
+          // 新增時間
+          createdAt: new Date(),
+          // 最後上線時間
+          lastSeen: new Date()
+        }
+        // 這個createOrFindUser係api models裹的一個定義佐的野
+        // 拿來查facebookid在我們的資料庫找出真正的user
+        return createOrFindUser(user, 'facebookProviderId')
+          // 找到user就交user出去,找不到user就null
+          .then(user => {
+            done(null, user)
+            return user
+          })
+          // 如果資料庫操作有任何錯誤,就將錯誤交出去
+          .catch(err => {
             done(err)
             return null
           })
