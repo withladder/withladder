@@ -3,10 +3,17 @@ var debug = require('debug')('api:authentication')
 var GoogleStrategy = require('passport-google-oauth2').Strategy
 
 var FacebookStrategy = require('passport-facebook').Strategy
+
+var GitHubStrategy = require('passport-github2').Strategy
+
+var TwitterStrategy = require('passport-twitter').Strategy
+
 // 再入passport
 var passport = require('passport')
 // 係models/users入面拿定義了的功能出黎用
 var { createOrFindUser } = require('./models/users')
+var { saveUserProvider } = require('./models/users')
+var { getUserByIndex } = require('./models/users')
 
 // 當browser first time向sever request時,sever就會整一個session出來(姐係有key:value個種)
 // session係將cookie作為memory,d client的data會草左係seession的cookie到
@@ -58,6 +65,7 @@ module.exports = () => {
             : ''
         // 暫時定義 user object
         const user = {
+          ProviderId: null,
           // google提供的ID
           googleProviderId: profile.id,
           // facebook提供的ID
@@ -135,6 +143,7 @@ module.exports = () => {
       (request, accessToken, refreshToken, profile, done) => {
         // 暫時定義 user object
         const user = {
+          ProviderId: null,
           // facebook提供的ID
           facebookProviderId: profile.id,
           // google提供的ID
@@ -189,5 +198,156 @@ module.exports = () => {
     )
   )
 
+  passport.use(new GitHubStrategy({
+
+    clientID: '865fcadcb8427385690d',
+    clientSecret: '973edf45a584184cdba35a0252e39dc64ab8ceb8',
+    callbackURL: 'http://localhost:3001/auth/github/callback',
+    scope: ['user'],
+    passReqToCallback: true
+  },
+  async (request, accessToken, refreshToken, profile, done) => {
+    debug('ffffffff')
+    const name =
+    profile.displayName || profile.username || profile._json.name || ''
+
+    const splitProfileUrl = profile.profileUrl.split('/')
+    const fallbackUsername = splitProfileUrl[splitProfileUrl.length - 1]
+    const githubUsername =
+    profile.username || profile._json.login || fallbackUsername
+
+    if (request.user) {
+      if (request.user.githubProviderId) {
+        if (!request.user.githubUsername) {
+          return saveUserProvider(
+            request.user.id,
+            'githubProviderId',
+            profile.id,
+            { githubUsername: githubUsername }
+          )
+            .then(user => {
+              done(null, user)
+              return user
+            })
+            .catch(err => {
+              done(err)
+              return null
+            })
+        }
+
+        return done(null, request.user)
+      }
+
+      const existingUserWithProviderId = await getUserByIndex(
+        'githubProviderId',
+        profile.id
+      )
+      if (!existingUserWithProviderId) {
+        return saveUserProvider(
+          request.user.id,
+          'githubProviderId',
+          profile.id,
+          { githubUsername: githubUsername }
+        )
+          .then(user => {
+            done(null, user)
+            return user
+          })
+          .catch(err => {
+            done(err)
+            return null
+          })
+      }
+      if (existingUserWithProviderId) {
+        return done(null, request.user)
+      }
+    }
+
+    const user = {
+      providerId: null,
+      facebookProviderId: null,
+      googleProviderId: null,
+      githubProviderId: profile.id,
+      username: null,
+      name: name,
+      email:
+              (profile.emails &&
+                profile.emails.length > 0 &&
+                profile.emails[0].value) ||
+              null,
+      profilePhoto:
+              (profile._json.avatar_url && profile._json.avatar_url) || null,
+      createdAt: new Date(),
+      lastSeen: new Date()
+    }
+
+    return createOrFindUser(user, 'githubProviderId')
+      .then(user => {
+        done(null, user)
+        return user
+      })
+      .catch(err => {
+        done(err)
+        return null
+      })
+  }
+  )
+  )
+
+  passport.use(
+    new TwitterStrategy(
+      {
+        consumerKey: '',
+        consumerSecret: '',
+        callbackURL: '',
+        includeEmail: true
+      },
+      (request, accessToken, refreshToken, profile, done) => {
+        const name =
+          profile.displayName ||
+          profile._json.name ||
+          profile._json.screen_name ||
+          profile.username ||
+          ''
+
+        const user = {
+          providerId: profile.id,
+          facebookProviderId: null,
+          googleProviderId: null,
+          githubProviderId: null,
+          username: null,
+          name,
+
+          // 電郵
+          email:
+            (profile.emails &&
+              profile.emails.length > 0 &&
+              profile.emails[0].value) ||
+              null,
+          // 大頭照
+          profilePhoto:
+            (profile.emails &&
+              profile.emails.length > 0 &&
+              profile.emails[0].value) ||
+              null,
+          coverPhoto: profile._json.profile_background_image_url_https
+            ? profile._json.profile_background_image_url_https
+            : null,
+          createdAt: new Date(),
+          lastSeen: new Date()
+        }
+
+        return createOrFindUser(user, 'ProviderId')
+          .then(user => {
+            done(null, user)
+            return user
+          })
+          .catch(err => {
+            done(err)
+            return null
+          })
+      }
+    )
+  )
   debug('initPassport end...')
 }
