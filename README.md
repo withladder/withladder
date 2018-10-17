@@ -7,7 +7,7 @@ npm install withladder
 # 用法
 
 ```js
-rquire('withladder')
+require('withladder')
 ```
 
 # 瀏覽器
