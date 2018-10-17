@@ -18,7 +18,7 @@ const getUsers = () => {
 //   createdAt: new Date(),
 //   lastSeen: new Date()
 // }
-// providerMethod = 'googleProviderId'
+// providerMethod = 'googleProviderId'(providerid仲有twitter,facebook,github都係等於providerMethod)
 const createOrFindUser = (user, providerMethod) => {
   debug('正在執行 createOrFindUser')
   // 設一個變數叫promise拿來save

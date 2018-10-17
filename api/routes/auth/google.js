@@ -21,7 +21,7 @@ googleAuthRouter.get('/callback', passport.authenticate('google', {
   // login work的時候行下面依行,根目錄
   successRedirect: '/',
 
-  // fail的時候就下面,未整
+  // fail的時候就下面
   failureRedirect: '/login'
 }))
 
