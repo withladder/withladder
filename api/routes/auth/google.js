@@ -1,11 +1,11 @@
-// 輸入router
+// 載入router
 const { Router } = require('express')
 // 定義一個google router
 const googleAuthRouter = Router()
 
 const passport = require('passport')
 
-//  驗證請求,使用passport.authenticate（）指定“google”策略來驗證請求。
+// 驗證請求,使用passport.authenticate（）指定“google”策略來驗證請求。
 // /auth/google/ => login google
 googleAuthRouter.get('/', passport.authenticate('google', {
   scope: [
