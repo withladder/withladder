@@ -4,11 +4,7 @@ exports.up = function (r, connection) {
   return Promise.all([
     r
       .table('users')
-      .indexCreate('email')
-      .run(connection),
-    r
-      .table('users')
-      .indexCreate('googleProviderId')
+      .indexCreate('facebookProviderId')
       .run(connection)
   ])
 }
@@ -17,11 +13,7 @@ exports.down = function (r, connection) {
   return Promise.all([
     r
       .table('users')
-      .indexDrop('email')
-      .run(connection),
-    r
-      .table('users')
-      .indexDrop('googleProviderId')
+      .indexCreate('facebookProviderId')
       .run(connection)
   ])
 }
