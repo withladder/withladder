@@ -5,17 +5,16 @@ const facebookAuthRouter = Router()
 const passport = require('passport')
 
 facebookAuthRouter.get('/', passport.authenticate('facebook', {
-    scope: [
-      'email'
-    ],
-    prompt: 'select_account'
-  }))
-  
-  facebookAuthRouter.get('/callback', passport.authenticate('facebook', {
+  scope: [
+    'email'
+  ]
+}))
 
-    successRedirect: '/',
-  
-    failureRedirect: '/login'
-  }))
+facebookAuthRouter.get('/callback', passport.authenticate('facebook', {
 
-  module.exports = facebookAuthRouter
+  successRedirect: '/',
+
+  failureRedirect: '/login'
+}))
+
+module.exports = facebookAuthRouter

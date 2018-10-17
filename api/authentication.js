@@ -126,7 +126,7 @@ module.exports = () => {
           'photos',
           'first_name',
           'last_name'
-        ],
+        ]
       },
       (request, accessToken, refreshToken, profile, done) => {
         const user = {
@@ -161,7 +161,7 @@ module.exports = () => {
 
           createdAt: new Date(),
 
-          lastSeen: new Date(),
+          lastSeen: new Date()
         }
 
         return createOrFindUser(user, 'facebookProviderId')
