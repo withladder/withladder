@@ -197,7 +197,7 @@ module.exports = () => {
       }
     )
   )
-
+  // 客戶端ID，客戶端密鑰和回調URL的選項
   passport.use(new GitHubStrategy({
 
     clientID: '865fcadcb8427385690d',
@@ -206,8 +206,9 @@ module.exports = () => {
     scope: ['user'],
     passReqToCallback: true
   },
+  // 用 github profile object 同你資料庫裡的 user 作比對
+  // 以找出你資料庫裡面屬於呢個 github 的 user
   async (request, accessToken, refreshToken, profile, done) => {
-    debug('ffffffff')
     const name =
     profile.displayName || profile.username || profile._json.name || ''
 
@@ -225,10 +226,12 @@ module.exports = () => {
             profile.id,
             { githubUsername: githubUsername }
           )
+            // 找到user就交user出去,找不到user就null
             .then(user => {
               done(null, user)
               return user
             })
+            // 如果資料庫操作有任何錯誤,就將錯誤交出去
             .catch(err => {
               done(err)
               return null
@@ -249,10 +252,12 @@ module.exports = () => {
           profile.id,
           { githubUsername: githubUsername }
         )
+          // 找到user就交user出去,找不到user就null
           .then(user => {
             done(null, user)
             return user
           })
+          // 如果資料庫操作有任何錯誤,就將錯誤交出去
           .catch(err => {
             done(err)
             return null
@@ -262,7 +267,7 @@ module.exports = () => {
         return done(null, request.user)
       }
     }
-
+    // 暫時定義 user object
     const user = {
       providerId: null,
       facebookProviderId: null,
@@ -270,22 +275,29 @@ module.exports = () => {
       githubProviderId: profile.id,
       username: null,
       name: name,
+      // 電郵
       email:
               (profile.emails &&
                 profile.emails.length > 0 &&
                 profile.emails[0].value) ||
               null,
+      // 大頭照
       profilePhoto:
               (profile._json.avatar_url && profile._json.avatar_url) || null,
+      // 新增時間
       createdAt: new Date(),
+      // 最後上線時間
       lastSeen: new Date()
     }
-
+    // 這個createOrFindUser係api models裹的一個定義佐的野
+    // 拿來查githubid在我們的資料庫找出真正的user
     return createOrFindUser(user, 'githubProviderId')
+      // 找到user就交user出去,找不到user就null
       .then(user => {
         done(null, user)
         return user
       })
+      // 如果資料庫操作有任何錯誤,就將錯誤交出去
       .catch(err => {
         done(err)
         return null
@@ -293,7 +305,7 @@ module.exports = () => {
   }
   )
   )
-
+  // 客戶端ID，客戶端密鑰和回調URL的選項
   passport.use(
     new TwitterStrategy(
       {
@@ -302,6 +314,8 @@ module.exports = () => {
         callbackURL: '',
         includeEmail: true
       },
+      // 用 twitter profile object 同你資料庫裡的 user 作比對
+      // 以找出你資料庫裡面屬於呢個 twitter 的 user
       (request, accessToken, refreshToken, profile, done) => {
         const name =
           profile.displayName ||
@@ -309,7 +323,7 @@ module.exports = () => {
           profile._json.screen_name ||
           profile.username ||
           ''
-
+        // 暫時定義 user object
         const user = {
           providerId: profile.id,
           facebookProviderId: null,
@@ -317,7 +331,6 @@ module.exports = () => {
           githubProviderId: null,
           username: null,
           name,
-
           // 電郵
           email:
             (profile.emails &&
@@ -330,18 +343,24 @@ module.exports = () => {
               profile.emails.length > 0 &&
               profile.emails[0].value) ||
               null,
+          // 封面照片
           coverPhoto: profile._json.profile_background_image_url_https
             ? profile._json.profile_background_image_url_https
             : null,
+          // 新增時間
           createdAt: new Date(),
+          // 最後上線時間
           lastSeen: new Date()
         }
-
+        // 這個createOrFindUser係api models裹的一個定義佐的野
+        // 拿來查twitterid在我們的資料庫找出真正的user
         return createOrFindUser(user, 'ProviderId')
+          // 找到user就交user出去,找不到user就null
           .then(user => {
             done(null, user)
             return user
           })
+          // 如果資料庫操作有任何錯誤,就將錯誤交出去
           .catch(err => {
             done(err)
             return null
