@@ -65,7 +65,7 @@ module.exports = () => {
             : ''
         // 暫時定義 user object
         const user = {
-          ProviderId: null,
+          providerId: null,
           // google提供的ID
           googleProviderId: profile.id,
           // facebook提供的ID
@@ -143,7 +143,7 @@ module.exports = () => {
       (request, accessToken, refreshToken, profile, done) => {
         // 暫時定義 user object
         const user = {
-          ProviderId: null,
+          providerId: null,
           // facebook提供的ID
           facebookProviderId: profile.id,
           // google提供的ID
@@ -354,7 +354,7 @@ module.exports = () => {
         }
         // 這個createOrFindUser係api models裹的一個定義佐的野
         // 拿來查twitterid在我們的資料庫找出真正的user
-        return createOrFindUser(user, 'ProviderId')
+        return createOrFindUser(user, 'providerId')
           // 找到user就交user出去,找不到user就null
           .then(user => {
             done(null, user)
