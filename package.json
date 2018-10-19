@@ -11,7 +11,7 @@
     "pretest": "npm run lint",
     "lint": "standard",
     "jest": "jest",
-    "test": "npm run jest -- --runInBand --watch"
+    "test": "npm run jest -- --forceExit --runInBand --detectOpenHandles"
   },
   "dependencies": {
     "cookie-parser": "^1.4.3",
