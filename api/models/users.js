@@ -8,6 +8,40 @@ const getUsers = () => {
   return db.table('users')
 }
 
+// 定義getUser為input object
+const getUser = async (input) => {
+  // input入面係input.id的時候就返回getUserById揾userId
+  if (input.id) return getUserById(input.id)
+  // input入面係input.username的時候就返回getUserByUsername揾username
+  if (input.username) return getUserByUsername(input.username)
+  return null
+}
+
+// 利用userId係users資料庫找user
+const getUserById = (userId) => {
+  // 返回資料庫揾野的promise
+  return db
+    // 選擇資料庫users的表
+    .table('users')
+    // 揾userId
+    .get(userId)
+    .run()
+}
+
+// 利用username係users資料庫找user
+const getUserByUsername = (username) => {
+  // 返回資料庫揾野的promise
+  return db
+    // 選擇資料庫users的表
+    .table('users')
+    // 揾username,在一個叫index的索引
+    .getAll(username, { index: 'username' })
+    .run()
+    // 如果他是一個空的arry [],返回 null
+    // 如果揾到username
+    // 返回[]第一個揾到的user
+    .then(result => (result ? result[0] : null))
+}
 // const user = {
 //   googleProviderId,
 //   name,
@@ -187,7 +221,7 @@ const storeUser = (user) => {
 
 // 利用email係users資料庫找user
 const getUserByEmail = (email) => {
-  // 反回資料庫揾野的promise
+  // 返回資料庫揾野的promise
   return db
     // 選擇資料庫users的表
     .table('users')
@@ -196,13 +230,13 @@ const getUserByEmail = (email) => {
     .run()
     // 如果他是一個空的arry [],返回 null
     // 如果揾到email, results = [ { id: '1', email: 'aaa@bbb.com' } ]
-    // 反回[]第一個揾到的user
+    // 返回[]第一個揾到的user
     .then(results => (results.length > 0 ? results[0] : null))
 }
 
 // 利用indexValue係users資料庫找user
 const getUserByIndex = (indexName, indexValue) => {
-  // 反回資料庫揾野的promise
+  // 返回資料庫揾野的promise
   return db
     // 選擇資料庫users的表
     .table('users')
@@ -223,5 +257,8 @@ module.exports = {
   getUserByEmail,
   getUserByIndex,
   saveUserProvider,
-  storeUser
+  storeUser,
+  getUser,
+  getUserById,
+  getUserByUsername
 }

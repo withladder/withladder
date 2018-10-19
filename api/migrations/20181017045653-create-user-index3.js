@@ -15,7 +15,7 @@ exports.down = function (r, connection) {
     // 刪除資料表users,githubProviderId
     r
       .table('users')
-      .indexCreate('githubProviderId')
+      .indexDrop('githubProviderId')
       .run(connection)
   ])
 }
