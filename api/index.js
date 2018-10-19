@@ -27,7 +27,23 @@ app.use('/auth', authRoutes)
 app.use('/api', apiRoutes)
 
 app.get('/', (req, res, next) => {
-  res.end('this is homepage')
+  if (req.user) {
+    res.set('Content-Type', 'text/html')
+    res.end(`
+      logged in 
+      <br />hello, ${req.user.name}
+      <br /><img src="${req.user.profilePhoto}" width="128" height="128" />
+      <br /><a href="/auth/logout">logout</a>
+    `)
+  } else {
+    res.set('Content-Type', 'text/html')
+    res.end(`
+      this is homepage, please login
+      <a href="/auth/google">google login</a>
+      <a href="/auth/facebook">facebook login</a>
+      <a href="/auth/github">github login</a>
+    `)
+  }
 })
 
 // 伺服器鈐聽3001 port
