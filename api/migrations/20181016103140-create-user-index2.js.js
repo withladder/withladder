@@ -15,7 +15,7 @@ exports.down = function (r, connection) {
     // 刪除資料表users,facebookProviderId
     r
       .table('users')
-      .indexCreate('facebookProviderId')
+      .indexDrop('facebookProviderId')
       .run(connection)
   ])
 }

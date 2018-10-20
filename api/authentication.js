@@ -6,14 +6,14 @@ var FacebookStrategy = require('passport-facebook').Strategy
 
 var GitHubStrategy = require('passport-github2').Strategy
 
-var TwitterStrategy = require('passport-twitter').Strategy
+// var TwitterStrategy = require('passport-twitter').Strategy
 
 // 再入passport
 var passport = require('passport')
 // 係models/users入面拿定義了的功能出黎用
-var { createOrFindUser } = require('./models/users')
-var { saveUserProvider } = require('./models/users')
-var { getUserByIndex } = require('./models/users')
+var { getUserByIndex, getUser, saveUserProvider, createOrFindUser } = require('./models/users')
+// 字串的頭同尾,姐係{},有的話就true,無的話就false
+const isSerializedJSON = (str) => str[0] === '{' && str[str.length - 1] === '}'
 
 // 當browser first time向sever request時,sever就會整一個session出來(姐係有key:value個種)
 // session係將cookie作為memory,d client的data會草左係seession的cookie到
@@ -22,19 +22,46 @@ var { getUserByIndex } = require('./models/users')
 module.exports = () => {
   debug('initPassport starting...')
 
-  // 存到 req.session.passport.user = { id: ... }
+  // 存到 req.session.passport.user = 'sdfsdfsf' <==id
   debug('define passport.serializeUser...')
   passport.serializeUser((user, done) => {
     debug('passport.serializeUser, user:', user)
-    done(null, user.id)
+    // 如果user係字串就將user變成字串
+    // 如果不是字串,是其他object和array都變成字串
+    done(null, typeof user === 'string' ? user : JSON.stringify(user))
   })
 
   // passport將session入面有的 userId ，從資料庫轉換成最初的 User
   debug('define passport.deserializeUser...')
-  passport.deserializeUser((user, done) => {
-    debug('passport.deserializeUser, user:', user)
+  passport.deserializeUser(async (data, done) => {
+    debug('passport.deserializeUser, data:', data)
     // 將 user object 再存到 req.user
-    done(null, user)
+    // 如果true的時候
+    if (isSerializedJSON(data)) {
+      // 定義user
+      let user
+      try {
+        // 分析data
+        user = JSON.parse(data)
+        debug('user經過分析data', user)
+      } catch (err) {} // 如果error的話就顯示空白
+      // 如果有user 和 user.id 和user.createsAt用戶創立時間
+      if (user && user.id && user.createdAt) {
+        // 就返回user
+        return done(null, user)
+      }
+    }
+    // 如果無user 和 user.id 和user.createsAt用戶創立時間
+    // 將個data當為user.id,data係有埋個D object同array變成的字串
+    const user = await getUser({ id: data })
+      .then(user => {
+        done(null, user)
+      })
+      .catch(err => {
+        done(err)
+      })
+    debug('經過database', user)
+    return user
   })
 
   // Google帳戶和OAuth 2.0對用戶進行身份驗證,該策略(姐係strategy)需要驗證callback
@@ -65,7 +92,7 @@ module.exports = () => {
             : ''
         // 暫時定義 user object
         const user = {
-          ProviderId: null,
+          providerId: null,
           // google提供的ID
           googleProviderId: profile.id,
           // facebook提供的ID
@@ -143,7 +170,7 @@ module.exports = () => {
       (request, accessToken, refreshToken, profile, done) => {
         // 暫時定義 user object
         const user = {
-          ProviderId: null,
+          providerId: null,
           // facebook提供的ID
           facebookProviderId: profile.id,
           // google提供的ID
@@ -306,6 +333,7 @@ module.exports = () => {
   )
   )
   // 客戶端ID，客戶端密鑰和回調URL的選項
+  /*
   passport.use(
     new TwitterStrategy(
       {
@@ -354,7 +382,7 @@ module.exports = () => {
         }
         // 這個createOrFindUser係api models裹的一個定義佐的野
         // 拿來查twitterid在我們的資料庫找出真正的user
-        return createOrFindUser(user, 'ProviderId')
+        return createOrFindUser(user, 'providerId')
           // 找到user就交user出去,找不到user就null
           .then(user => {
             done(null, user)
@@ -368,5 +396,6 @@ module.exports = () => {
       }
     )
   )
+  */
   debug('initPassport end...')
 }

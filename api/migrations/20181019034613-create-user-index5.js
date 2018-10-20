@@ -2,20 +2,20 @@
 
 exports.up = function (r, connection) {
   return Promise.all([
-    // 新增資料表users,ProviderId
+    // 新增資料表users,username
     r
       .table('users')
-      .indexCreate('ProviderId')
+      .indexCreate('username')
       .run(connection)
   ])
 }
 
 exports.down = function (r, connection) {
   return Promise.all([
-    // 刪除資料表users,ProviderId
+    // 刪除資料表users,username
     r
       .table('users')
-      .indexDrop('ProviderId')
+      .indexDrop('username')
       .run(connection)
   ])
 }
