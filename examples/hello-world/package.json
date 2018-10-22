@@ -2,7 +2,10 @@
   "name": "hello-world",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
-    "withladder": "0.0.1"
+    "withladder": "0.0.2"
   }
 }

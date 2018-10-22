@@ -73,7 +73,7 @@ module.exports = () => {
       {
         clientID: '1068634871247-ckou6khh8g05fvb52g2f713eft3j9mmi.apps.googleusercontent.com',
         clientSecret: 'Ja2Dghn7XllztASGZebvImXI',
-        callbackURL: '/auth/google/callback'
+        callbackURL: 'https://macau.sh/auth/google/callback'
       },
       // 當 google 驗證成功或者失敗, 都會執行下面呢個 function
       // 若成功時, 最後要執行 done(undefined, user)
@@ -156,7 +156,7 @@ module.exports = () => {
       {
         clientID: '1085221001634239',
         clientSecret: '4711c12d9c8341bd5eea6ecba918d70e',
-        callbackURL: '/auth/facebook/callback',
+        callbackURL: 'https://macau.sh/auth/facebook/callback',
         profileFields: [
           'id',
           'displayName',
@@ -230,7 +230,7 @@ module.exports = () => {
 
     clientID: '865fcadcb8427385690d',
     clientSecret: '973edf45a584184cdba35a0252e39dc64ab8ceb8',
-    callbackURL: 'http://localhost:3001/auth/github/callback',
+    callbackURL: 'https://macau.sh/auth/github/callback',
     scope: ['user'],
     passReqToCallback: true
   },
