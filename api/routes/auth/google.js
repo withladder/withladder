@@ -2,7 +2,7 @@
 const { Router } = require('express')
 // 定義一個google router
 const googleAuthRouter = Router()
-
+// 戴入passport
 const passport = require('passport')
 
 // 驗證請求,使用passport.authenticate（）指定“google”策略來驗證請求。

@@ -1,9 +1,10 @@
+// 比自己測有無錯時用
 var debug = require('debug')('api:authentication')
 // 利用google的strategy
 var GoogleStrategy = require('passport-google-oauth2').Strategy
-
+// 利用Facebook的strategy
 var FacebookStrategy = require('passport-facebook').Strategy
-
+// 利用GitHub的strategy
 var GitHubStrategy = require('passport-github2').Strategy
 
 // var TwitterStrategy = require('passport-twitter').Strategy

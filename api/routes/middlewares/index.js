@@ -26,4 +26,5 @@ const passport = require('passport')
 middlewares.use(passport.initialize())
 middlewares.use(passport.session())
 
+// 滙出 middlewares
 module.exports = middlewares

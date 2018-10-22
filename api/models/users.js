@@ -3,7 +3,7 @@
 const { db } = require('./db')
 const debug = require('debug')('api:models:users')
 
-// 設定功能反回database中所有用戶data
+// 設定功能返回database中所有用戶data
 const getUsers = () => {
   return db.table('users')
 }
@@ -196,7 +196,7 @@ const saveUserProvider = (
 // 新增用戶
 const storeUser = (user) => {
   debug('新增用戶 storeUser')
-  // 反回資料庫新增的promise
+  // 返回資料庫新增的promise
   return db
     // 選擇資料庫users的表
     .table('users')

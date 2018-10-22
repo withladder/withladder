@@ -1,3 +1,4 @@
+// 嚴格模式,有部份的語法係會規定無法使用
 'use strict'
 
 exports.up = function (r, connection) {

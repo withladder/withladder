@@ -1,3 +1,4 @@
+// 比自己測有無錯時用
 var debug = require('debug')('api')
 debug('api server starting...')
 // library
@@ -25,10 +26,12 @@ app.use(middlewares)
 app.use('/auth', authRoutes)
 // 網址如果是api的時候,執行apiRoutes的仲介
 app.use('/api', apiRoutes)
-
+// 網址如果是根目錄的時候
 app.get('/', (req, res, next) => {
   if (req.user) {
+    // 要執行html就用下面這行
     res.set('Content-Type', 'text/html')
+    // login後出現的野
     res.end(`
       logged in 
       <br />hello, ${req.user.name}
@@ -36,7 +39,9 @@ app.get('/', (req, res, next) => {
       <br /><a href="/auth/logout">logout</a>
     `)
   } else {
+    // 要執行html就用下面這行
     res.set('Content-Type', 'text/html')
+    // 未login出現的野
     res.end(`
       this is homepage, please login
       <a href="/auth/google">google login</a>
