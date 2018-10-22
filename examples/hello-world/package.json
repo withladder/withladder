@@ -6,6 +6,6 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "withladder": "0.0.2"
+    "withladder": "0.0.3"
   }
 }

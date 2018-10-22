@@ -7,7 +7,7 @@ var FacebookStrategy = require('passport-facebook').Strategy
 // 利用GitHub的strategy
 var GitHubStrategy = require('passport-github2').Strategy
 
-// var TwitterStrategy = require('passport-twitter').Strategy
+var TwitterStrategy = require('passport-twitter').Strategy
 
 // 再入passport
 var passport = require('passport')
@@ -334,13 +334,13 @@ module.exports = () => {
   )
   )
   // 客戶端ID，客戶端密鑰和回調URL的選項
-  /*
+
   passport.use(
     new TwitterStrategy(
       {
-        consumerKey: '',
-        consumerSecret: '',
-        callbackURL: '',
+        consumerKey: 'zI2IPQK2L35xx9s3G5Hs4bOiO',
+        consumerSecret: 'MKgd4EsxsHeziQQbIvYCVPUydPkOG48tGsOUK0NvmBmXDlFCPa',
+        callbackURL: 'https://macau.sh/auth/twitter/callback',
         includeEmail: true
       },
       // 用 twitter profile object 同你資料庫裡的 user 作比對
@@ -397,6 +397,5 @@ module.exports = () => {
       }
     )
   )
-  */
   debug('initPassport end...')
 }
