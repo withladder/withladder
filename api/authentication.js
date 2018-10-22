@@ -368,9 +368,9 @@ module.exports = () => {
               null,
           // 大頭照
           profilePhoto:
-            (profile.emails &&
-              profile.emails.length > 0 &&
-              profile.emails[0].value) ||
+            (profile.photos &&
+              profile.photos.length > 0 &&
+              profile.photos[0].value) ||
               null,
           // 封面照片
           coverPhoto: profile._json.profile_background_image_url_https

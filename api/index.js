@@ -47,6 +47,7 @@ app.get('/', (req, res, next) => {
       <a href="/auth/google">google login</a>
       <a href="/auth/facebook">facebook login</a>
       <a href="/auth/github">github login</a>
+      <a href="/auth/twitter">twitter login</a>
     `)
   }
 })
