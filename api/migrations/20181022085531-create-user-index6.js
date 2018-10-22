@@ -6,7 +6,11 @@ exports.up = function (r, connection) {
     // 新增資料表users,ProviderId
     r
       .table('users')
-      .indexCreate('ProviderId')
+      .indexCreate('providerId')
+      .run(connection),
+    r
+      .table('users')
+      .indexDrop('ProviderId')
       .run(connection)
   ])
 }
@@ -16,7 +20,7 @@ exports.down = function (r, connection) {
     // 刪除資料表users,ProviderId
     r
       .table('users')
-      .indexDrop('ProviderId')
+      .indexDrop('providerId')
       .run(connection)
   ])
 }
