@@ -1,13 +1,11 @@
 {
   "name": "withladder",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "api/index.js",
   "license": "MIT",
   "scripts": {
     "dev": "cross-env DEBUG=api* nodemon api/index.js",
-    "rethinkdb:migrate": "rethinkdb-migrate -f ./api/migrations/config.js",
-    "db:migrate": "npm run rethinkdb:migrate -- up",
-    "db:drop": "npm run rethinkdb:migrate -- down",
+    "db:migrate": "withladder-models-rethinkdb up",
     "pretest": "npm run lint",
     "lint": "standard",
     "jest": "jest",
@@ -23,7 +21,7 @@
     "passport-github2": "^0.1.11",
     "passport-google-oauth2": "^0.1.6",
     "passport-twitter": "^1.0.4",
-    "withladder-models-rethinkdb": "0.0.1"
+    "withladder-models-rethinkdb": "0.0.2"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
