@@ -11,8 +11,6 @@ var TwitterStrategy = require('passport-twitter').Strategy
 
 // 再入passport
 var passport = require('passport')
-// 係models/users入面拿定義了的功能出黎用
-var { getUserByIndex, getUser, saveUserProvider, createOrFindUser } = require('./models/users')
 // 字串的頭同尾,姐係{},有的話就true,無的話就false
 const isSerializedJSON = (str) => str[0] === '{' && str[str.length - 1] === '}'
 
@@ -34,7 +32,7 @@ module.exports = () => {
 
   // passport將session入面有的 userId ，從資料庫轉換成最初的 User
   debug('define passport.deserializeUser...')
-  passport.deserializeUser(async (data, done) => {
+  passport.deserializeUser(async (req, data, done) => {
     debug('passport.deserializeUser, data:', data)
     // 將 user object 再存到 req.user
     // 如果true的時候
@@ -54,7 +52,7 @@ module.exports = () => {
     }
     // 如果無user 和 user.id 和user.createsAt用戶創立時間
     // 將個data當為user.id,data係有埋個D object同array變成的字串
-    const user = await getUser({ id: data })
+    const user = await req.models.getUser({ id: data })
       .then(user => {
         done(null, user)
       })
@@ -73,7 +71,9 @@ module.exports = () => {
       {
         clientID: '1068634871247-ckou6khh8g05fvb52g2f713eft3j9mmi.apps.googleusercontent.com',
         clientSecret: 'Ja2Dghn7XllztASGZebvImXI',
-        callbackURL: 'https://macau.sh/auth/google/callback'
+        callbackURL: 'https://macau.sh/auth/google/callback',
+        // 如果有passReqToCallback true就比一個request比你
+        passReqToCallback: true
       },
       // 當 google 驗證成功或者失敗, 都會執行下面呢個 function
       // 若成功時, 最後要執行 done(undefined, user)
@@ -133,7 +133,7 @@ module.exports = () => {
 
         // 這個createOrFindUser係api models裹的一個定義佐的野
         // 拿來查googleid在我們的資料庫找出真正的user
-        return createOrFindUser(user, 'googleProviderId')
+        return request.models.createOrFindUser(user, 'googleProviderId')
           // 找到user就交user出去,找不到user就null
           .then(user => {
             debug('執行完 createOrFindUser 之後, 返回資料庫裡的一筆 user 資料:', user)
@@ -164,7 +164,9 @@ module.exports = () => {
           'photos',
           'first_name',
           'last_name'
-        ]
+        ],
+        // 如果有passReqToCallback true就比一個request比你
+        passReqToCallback: true
       },
       // 用 facebook profile object 同你資料庫裡的 user 作比對
       // 以找出你資料庫裡面屬於呢個 facebook 的 user
@@ -211,7 +213,7 @@ module.exports = () => {
         }
         // 這個createOrFindUser係api models裹的一個定義佐的野
         // 拿來查facebookid在我們的資料庫找出真正的user
-        return createOrFindUser(user, 'facebookProviderId')
+        return request.models.createOrFindUser(user, 'facebookProviderId')
           // 找到user就交user出去,找不到user就null
           .then(user => {
             done(null, user)
@@ -232,6 +234,7 @@ module.exports = () => {
     clientSecret: '973edf45a584184cdba35a0252e39dc64ab8ceb8',
     callbackURL: 'https://macau.sh/auth/github/callback',
     scope: ['user'],
+    // 如果有passReqToCallback true就比一個request比你
     passReqToCallback: true
   },
   // 用 github profile object 同你資料庫裡的 user 作比對
@@ -248,7 +251,7 @@ module.exports = () => {
     if (request.user) {
       if (request.user.githubProviderId) {
         if (!request.user.githubUsername) {
-          return saveUserProvider(
+          return request.models.saveUserProvider(
             request.user.id,
             'githubProviderId',
             profile.id,
@@ -269,12 +272,12 @@ module.exports = () => {
         return done(null, request.user)
       }
 
-      const existingUserWithProviderId = await getUserByIndex(
+      const existingUserWithProviderId = await request.models.getUserByIndex(
         'githubProviderId',
         profile.id
       )
       if (!existingUserWithProviderId) {
-        return saveUserProvider(
+        return request.models.saveUserProvider(
           request.user.id,
           'githubProviderId',
           profile.id,
@@ -319,7 +322,7 @@ module.exports = () => {
     }
     // 這個createOrFindUser係api models裹的一個定義佐的野
     // 拿來查githubid在我們的資料庫找出真正的user
-    return createOrFindUser(user, 'githubProviderId')
+    return request.models.createOrFindUser(user, 'githubProviderId')
       // 找到user就交user出去,找不到user就null
       .then(user => {
         done(null, user)
@@ -341,7 +344,9 @@ module.exports = () => {
         consumerKey: 'zI2IPQK2L35xx9s3G5Hs4bOiO',
         consumerSecret: 'MKgd4EsxsHeziQQbIvYCVPUydPkOG48tGsOUK0NvmBmXDlFCPa',
         callbackURL: 'https://macau.sh/auth/twitter/callback',
-        includeEmail: true
+        includeEmail: true,
+        // 如果有passReqToCallback true就比一個request比你
+        passReqToCallback: true
       },
       // 用 twitter profile object 同你資料庫裡的 user 作比對
       // 以找出你資料庫裡面屬於呢個 twitter 的 user
@@ -383,7 +388,7 @@ module.exports = () => {
         }
         // 這個createOrFindUser係api models裹的一個定義佐的野
         // 拿來查twitterid在我們的資料庫找出真正的user
-        return createOrFindUser(user, 'providerId')
+        return request.models.createOrFindUser(user, 'providerId')
           // 找到user就交user出去,找不到user就null
           .then(user => {
             done(null, user)
