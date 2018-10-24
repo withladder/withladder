@@ -4,8 +4,6 @@
   "main": "api/index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env DEBUG=api* nodemon api/index.js",
-    "db:migrate": "withladder-models-rethinkdb up",
     "pretest": "npm run lint",
     "lint": "standard",
     "jest": "jest",
@@ -20,8 +18,7 @@
     "passport-facebook": "^2.1.1",
     "passport-github2": "^0.1.11",
     "passport-google-oauth2": "^0.1.6",
-    "passport-twitter": "^1.0.4",
-    "withladder-models-rethinkdb": "0.0.2"
+    "passport-twitter": "^1.0.4"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",

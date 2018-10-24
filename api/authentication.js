@@ -11,8 +11,6 @@ var TwitterStrategy = require('passport-twitter').Strategy
 
 // 再入passport
 var passport = require('passport')
-// 係models/users入面拿定義了的功能出黎用
-var { getUserByIndex, getUser, saveUserProvider, createOrFindUser } = require('withladder-models-rethinkdb')
 // 字串的頭同尾,姐係{},有的話就true,無的話就false
 const isSerializedJSON = (str) => str[0] === '{' && str[str.length - 1] === '}'
 
@@ -34,7 +32,7 @@ module.exports = () => {
 
   // passport將session入面有的 userId ，從資料庫轉換成最初的 User
   debug('define passport.deserializeUser...')
-  passport.deserializeUser(async (data, done) => {
+  passport.deserializeUser(async (req, data, done) => {
     debug('passport.deserializeUser, data:', data)
     // 將 user object 再存到 req.user
     // 如果true的時候
@@ -54,7 +52,7 @@ module.exports = () => {
     }
     // 如果無user 和 user.id 和user.createsAt用戶創立時間
     // 將個data當為user.id,data係有埋個D object同array變成的字串
-    const user = await getUser({ id: data })
+    const user = await req.models.getUser({ id: data })
       .then(user => {
         done(null, user)
       })
@@ -133,7 +131,7 @@ module.exports = () => {
 
         // 這個createOrFindUser係api models裹的一個定義佐的野
         // 拿來查googleid在我們的資料庫找出真正的user
-        return createOrFindUser(user, 'googleProviderId')
+        return request.models.createOrFindUser(user, 'googleProviderId')
           // 找到user就交user出去,找不到user就null
           .then(user => {
             debug('執行完 createOrFindUser 之後, 返回資料庫裡的一筆 user 資料:', user)
@@ -211,7 +209,7 @@ module.exports = () => {
         }
         // 這個createOrFindUser係api models裹的一個定義佐的野
         // 拿來查facebookid在我們的資料庫找出真正的user
-        return createOrFindUser(user, 'facebookProviderId')
+        return request.models.createOrFindUser(user, 'facebookProviderId')
           // 找到user就交user出去,找不到user就null
           .then(user => {
             done(null, user)
@@ -248,7 +246,7 @@ module.exports = () => {
     if (request.user) {
       if (request.user.githubProviderId) {
         if (!request.user.githubUsername) {
-          return saveUserProvider(
+          return request.models.saveUserProvider(
             request.user.id,
             'githubProviderId',
             profile.id,
@@ -269,12 +267,12 @@ module.exports = () => {
         return done(null, request.user)
       }
 
-      const existingUserWithProviderId = await getUserByIndex(
+      const existingUserWithProviderId = await request.models.getUserByIndex(
         'githubProviderId',
         profile.id
       )
       if (!existingUserWithProviderId) {
-        return saveUserProvider(
+        return request.models.saveUserProvider(
           request.user.id,
           'githubProviderId',
           profile.id,
@@ -319,7 +317,7 @@ module.exports = () => {
     }
     // 這個createOrFindUser係api models裹的一個定義佐的野
     // 拿來查githubid在我們的資料庫找出真正的user
-    return createOrFindUser(user, 'githubProviderId')
+    return request.models.createOrFindUser(user, 'githubProviderId')
       // 找到user就交user出去,找不到user就null
       .then(user => {
         done(null, user)
@@ -383,7 +381,7 @@ module.exports = () => {
         }
         // 這個createOrFindUser係api models裹的一個定義佐的野
         // 拿來查twitterid在我們的資料庫找出真正的user
-        return createOrFindUser(user, 'providerId')
+        return request.models.createOrFindUser(user, 'providerId')
           // 找到user就交user出去,找不到user就null
           .then(user => {
             done(null, user)
