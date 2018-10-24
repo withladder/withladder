@@ -8,6 +8,6 @@
   },
   "dependencies": {
     "withladder": "0.0.9",
-    "withladder-models-rethinkdb": "0.0.2"
+    "withladder-models-rethinkdb": "0.0.4"
   }
 }
