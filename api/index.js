@@ -16,13 +16,17 @@ var initPassport = require('./authentication')
 // 初始化
 initPassport()
 
+// 執行createApp function 就會返回一個app object
 function createApp (options = {}) {
   // 定義app
   const app = express()
 
+  // app.options = 參數options
   app.options = options
+  //  app.models = options.models or empty object
   app.models = options.models || {}
-
+  // 定義 req.models
+  // 定義 req.app
   app.use((req, res, next) => {
     req.models = app.models
     req.app = app
@@ -71,5 +75,5 @@ function createApp (options = {}) {
   return app
 }
 
-// 滙出app
+// 滙出createApp function
 module.exports = createApp

@@ -72,6 +72,7 @@ module.exports = () => {
         clientID: '1068634871247-ckou6khh8g05fvb52g2f713eft3j9mmi.apps.googleusercontent.com',
         clientSecret: 'Ja2Dghn7XllztASGZebvImXI',
         callbackURL: 'https://macau.sh/auth/google/callback',
+        // 如果有passReqToCallback true就比一個request比你
         passReqToCallback: true
       },
       // 當 google 驗證成功或者失敗, 都會執行下面呢個 function
@@ -164,6 +165,7 @@ module.exports = () => {
           'first_name',
           'last_name'
         ],
+        // 如果有passReqToCallback true就比一個request比你
         passReqToCallback: true
       },
       // 用 facebook profile object 同你資料庫裡的 user 作比對
@@ -232,6 +234,7 @@ module.exports = () => {
     clientSecret: '973edf45a584184cdba35a0252e39dc64ab8ceb8',
     callbackURL: 'https://macau.sh/auth/github/callback',
     scope: ['user'],
+    // 如果有passReqToCallback true就比一個request比你
     passReqToCallback: true
   },
   // 用 github profile object 同你資料庫裡的 user 作比對
@@ -342,6 +345,7 @@ module.exports = () => {
         consumerSecret: 'MKgd4EsxsHeziQQbIvYCVPUydPkOG48tGsOUK0NvmBmXDlFCPa',
         callbackURL: 'https://macau.sh/auth/twitter/callback',
         includeEmail: true,
+        // 如果有passReqToCallback true就比一個request比你
         passReqToCallback: true
       },
       // 用 twitter profile object 同你資料庫裡的 user 作比對
