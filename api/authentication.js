@@ -71,7 +71,8 @@ module.exports = () => {
       {
         clientID: '1068634871247-ckou6khh8g05fvb52g2f713eft3j9mmi.apps.googleusercontent.com',
         clientSecret: 'Ja2Dghn7XllztASGZebvImXI',
-        callbackURL: 'https://macau.sh/auth/google/callback'
+        callbackURL: 'https://macau.sh/auth/google/callback',
+        passReqToCallback: true
       },
       // 當 google 驗證成功或者失敗, 都會執行下面呢個 function
       // 若成功時, 最後要執行 done(undefined, user)
@@ -162,7 +163,8 @@ module.exports = () => {
           'photos',
           'first_name',
           'last_name'
-        ]
+        ],
+        passReqToCallback: true
       },
       // 用 facebook profile object 同你資料庫裡的 user 作比對
       // 以找出你資料庫裡面屬於呢個 facebook 的 user
@@ -339,7 +341,8 @@ module.exports = () => {
         consumerKey: 'zI2IPQK2L35xx9s3G5Hs4bOiO',
         consumerSecret: 'MKgd4EsxsHeziQQbIvYCVPUydPkOG48tGsOUK0NvmBmXDlFCPa',
         callbackURL: 'https://macau.sh/auth/twitter/callback',
-        includeEmail: true
+        includeEmail: true,
+        passReqToCallback: true
       },
       // 用 twitter profile object 同你資料庫裡的 user 作比對
       // 以找出你資料庫裡面屬於呢個 twitter 的 user
