@@ -12,7 +12,7 @@ var TwitterStrategy = require('passport-twitter').Strategy
 // 再入passport
 var passport = require('passport')
 // 係models/users入面拿定義了的功能出黎用
-var { getUserByIndex, getUser, saveUserProvider, createOrFindUser } = require('./models/users')
+var { getUserByIndex, getUser, saveUserProvider, createOrFindUser } = require('withladder-models-rethinkdb')
 // 字串的頭同尾,姐係{},有的話就true,無的話就false
 const isSerializedJSON = (str) => str[0] === '{' && str[str.length - 1] === '}'
 

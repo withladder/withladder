@@ -1,5 +1,5 @@
 // 將models/users的getUsers輸入
-const { getUsers } = require('../../models/users')
+const { getUsers } = require('withladder-models-rethinkdb')
 
 // 滙出一個function,作為仲介者使用
 // awit係等要同asnyc一起使用,而且要loading這一行再運行下面的東西
