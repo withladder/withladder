@@ -1,6 +1,6 @@
 {
   "name": "withladder",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": "api/index.js",
   "license": "MIT",
   "scripts": {
