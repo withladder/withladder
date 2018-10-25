@@ -1,7 +1,7 @@
 const withladder = require('withladder')
 const models = require('withladder-models-rethinkdb')
 
-withladder({
+const app = withladder({
   models,
   twitter: {
     consumerKey: 'zI2IPQK2L35xx9s3G5Hs4bOiO',
@@ -23,4 +23,33 @@ withladder({
     clientSecret: '4711c12d9c8341bd5eea6ecba918d70e',
     callbackURL: 'https://macau.sh/auth/facebook/callback'
   }
+})
+
+app.get('/', (req, res, next) => {
+  if (req.user) {
+    // 要執行html就用下面這行
+    res.set('Content-Type', 'text/html')
+    // login後出現的野
+    res.end(`
+      logged in 
+      <br />hello, ${req.user.name}
+      <br /><img src="${req.user.profilePhoto}" width="128" height="128" />
+      <br /><a href="/auth/logout">logout</a>
+    `)
+  } else {
+    // 要執行html就用下面這行
+    res.set('Content-Type', 'text/html')
+    // 未login出現的野
+    res.end(`
+      this is homepage, please login
+      <a href="/auth/google">google login</a>
+      <a href="/auth/facebook">facebook login</a>
+      <a href="/auth/github">github login</a>
+      <a href="/auth/twitter">twitter login</a>
+    `)
+  }
+})
+
+app.apiRoutes.use((req, res, next) => {
+  res.end('hello api!!!!!!')
 })
