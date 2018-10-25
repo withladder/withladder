@@ -13,8 +13,6 @@ var apiRoutes = require('./routes/api')
 var authRoutes = require('./routes/auth')
 // 處理googleAPI主人認證,session的data轉換
 var initPassport = require('./authentication')
-// 初始化
-initPassport()
 
 // 執行createApp function 就會返回一個app object
 function createApp (options = {}) {
@@ -25,6 +23,10 @@ function createApp (options = {}) {
   app.options = options
   //  app.models = options.models or empty object
   app.models = options.models || {}
+
+  // 初始化
+  initPassport(app)
+
   // 定義 req.models
   // 定義 req.app
   app.use((req, res, next) => {
