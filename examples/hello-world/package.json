@@ -7,7 +7,7 @@
     "db:migrate": "withladder-models-rethinkdb up"
   },
   "dependencies": {
-    "withladder": "0.0.11",
-    "withladder-models-rethinkdb": "0.0.4"
+    "withladder": "0.0.12",
+    "withladder-models-rethinkdb": "0.0.5"
   }
 }
