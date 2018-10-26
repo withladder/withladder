@@ -6,7 +6,7 @@ var GoogleStrategy = require('passport-google-oauth2').Strategy
 var FacebookStrategy = require('passport-facebook').Strategy
 // 利用GitHub的strategy
 var GitHubStrategy = require('passport-github2').Strategy
-
+// 利用Twitter的strategy
 var TwitterStrategy = require('passport-twitter').Strategy
 
 // 再入passport
